@@ -53,6 +53,7 @@ vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
+vim.opt.colorcolumn = '120'
 
 -- Decrease update time
 vim.opt.updatetime = 250
@@ -683,18 +684,39 @@ require('lazy').setup({
     name = 'catppuccin',
     priority = 1000,
     init = function()
+      require('catppuccin').setup {
+        transparent_background = true, -- Set transparency
+      }
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'catppuccin'
+      -- Customize the highlight for the current line background
+      vim.api.nvim_command 'highlight CursorLine guibg=none'
+      vim.api.nvim_command 'highlight CursorLineNr guibg=none guifg=#FFFFFF'
+      vim.api.nvim_command 'highlight LineNr guibg=none guifg=#888888'
+      vim.api.nvim_command 'highlight ColorColumn guibg=#777777'
+      vim.api.nvim_command 'highlight ColorColumn guibg=#777777'
+      vim.api.nvim_command 'highlight! NeoTreeDotfile guifg=#AAAAAA'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-
+  { 'lukas-reineke/virt-column.nvim', opts = {} },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    ft = { 'markdown' },
+    build = function()
+      vim.fn['mkdp#util#install']()
+    end,
+    config = function()
+      vim.keymap.set('n', '<leader>pv', ':MarkdownPreview<CR>', {})
+    end,
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
